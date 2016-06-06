@@ -1,2 +1,2 @@
-*Chat Buddies
-**Project 4
+Chat Buddies
+Project 4
