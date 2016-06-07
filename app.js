@@ -10,7 +10,7 @@ var express         = require('express');
 var firebase        = require('firebase');
 
 // routes
-var routes = require('./routes/index');
+var homeRoutes = require('./routes/index');
 
 //  setup app
 var app = express();
@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components')));
 
-app.use('/', routes);
+app.use('/', homeRoutes);
 
 
 // catch 404 and forward to error handler
