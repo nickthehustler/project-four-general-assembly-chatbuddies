@@ -57,7 +57,7 @@ angular.module('chatBuddies')
           // initialize listeners on user
           // ::::::::::::::::DEVELOPER TODO::::::::::::::::
 
-          // redirect to user profile page (?)
+          // redirect to user profile page
           $state.go('profile', {uid: vm.newUser.uid});
           // $state.go('profile', {uid: vm.firebase.database.currentUser.uid});
           })
@@ -75,11 +75,42 @@ angular.module('chatBuddies')
     }
   }
 
+  vm.login = function() {
+
+    firebase.auth().signInWithEmailAndPassword(vm.user.email, vm.user.password)
+    .then(function(confirmedUser) {
+      console.log("User has been confirmed!");
+      console.log(confirmedUser);
+      // redirect to user profile page (?)
+      $state.go('profile', {uid: confirmedUser.uid});
+    })
+    .catch(function(error){
+      // create an error message if something goes wrong
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode + ": " + errorMessage);
+    });
+  }
+
 });
 
 angular.module('chatBuddies')
-.controller('usersController', function(){
+.controller('usersController', function($state){
   console.log("usersController is alive!");
+
+  var vm = this;
+
+  // move to navigation bar eventually
+  // ::::::::::::::::DEVELOPER TODO::::::::::::::::
+  vm.signOut = function() {
+    firebase.auth().signOut()
+    .then(function() {
+      console.log("successfully signout!");
+      $state.go('home');
+    }, function(error) {
+      console.log("Something bad happened during the signout process!");
+    });
+  }
 });
 
 angular.module('chatBuddies')

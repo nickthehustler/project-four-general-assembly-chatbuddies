@@ -1,1 +1,21 @@
-<h1>This is the Login View</h1>
+<div>
+  <h1>Login to Chat Buddies</h1>
+
+  <form ng-submit="ctrl.login()">
+    <div>
+      <label>Email</label><br>
+      <input type="text" name="email" ng-model="ctrl.user.email"><br>
+    </div>
+
+    <div>
+      <label>Password</label><br>
+      <input type="password" name="password" ng-model="ctrl.user.password"><br>
+    </div>
+
+    <div>
+      <input type="submit" value="Log Me Up!"><br>
+    </div>
+  </form>
+
+  <a ui-sref="signup">I just realized I don't have an account! I need to sign up!</a>
+</div>
