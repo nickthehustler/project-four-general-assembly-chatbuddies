@@ -4,9 +4,6 @@ var firebase  = require('firebase');
 // initialize a new router
 var router    = express.Router();
 
-
-
-
 // initialize firebase
 firebase.initializeApp({
   serviceAccount: {
@@ -23,9 +20,42 @@ var ref = db.ref("firebase/chatbuddies");
 var usersRef = ref.child('users');
 var chatsRef = ref.child('chats');
 
-router.get('/:username', function(req, res, next) {
+// routes
+
+router.get('/:uid', function(req, res, next) {
   // retrieve user from database
   console.log("You are in the GET route");
+  console.log(req.params.uid);
+
+  var vm = this;
+
+   vm.tempUser = {
+      username: '',
+      email: '',
+      uid: '',
+      photoURL: '',
+      chats: ''
+    };
+
+  usersRef.child(req.params.uid).once('value')
+  .then(function(snapshot) {
+    console.log("Here is the user's username: ", snapshot.val().username);
+    console.log("Here is the user's uid: ", req.params.uid);
+    console.log("Here is the user's photoURL: ", snapshot.val().photoURL);
+    console.log("Here is the user's email: ", snapshot.val().email);
+
+    vm.tempUser.username = snapshot.val().username;
+    vm.tempUser.photoURL = snapshot.val().photoURL;
+    vm.tempUser.email    = snapshot.val().email;
+    vm.tempUser.chats    = snapshot.val().chats;
+    vm.tempUser.uid      = req.params.uid;
+
+    console.log(vm.tempUser);
+    res.json(vm.tempUser);
+  })
+  .catch(function(error){
+    console.log("Something went wrong with the firebase DB.");
+  });
 });
 
 router.post('/', function(req, res, next) {
@@ -46,6 +76,10 @@ router.post('/', function(req, res, next) {
   .then(function(){
     res.json({content: "Hello Nick"});
   })
+});
+
+router.get('/search', function(req, res, next) {
+
 });
 
 module.exports = router;

@@ -95,10 +95,33 @@ angular.module('chatBuddies')
 });
 
 angular.module('chatBuddies')
-.controller('usersController', function($state){
+.controller('usersController', function($http, $state){
   console.log("usersController is alive!");
 
   var vm = this;
+
+  vm.currentUser = {
+    username: '',
+    email: '',
+    uid: firebase.auth().currentUser.uid,
+    photoURL: '',
+    chats: ''
+  }
+
+  vm.getCurrentUserInfo = function() {
+    console.log("Getting user info");
+    vm.currentUser.uid = firebase.auth().currentUser.uid;
+
+    $http
+    .get('/api/users/' + vm.currentUser.uid)
+    .then(function(response){
+
+      vm.currentUser.username = response.data.username;
+      vm.currentUser.email    = response.data.email;
+      vm.currentUser.photoURL = response.data.photoURL;
+      vm.currentUser.chats    = response.data.chats;
+    });
+  }
 
   // move to navigation bar eventually
   // ::::::::::::::::DEVELOPER TODO::::::::::::::::
@@ -111,6 +134,8 @@ angular.module('chatBuddies')
       console.log("Something bad happened during the signout process!");
     });
   }
+
+  vm.getCurrentUserInfo();
 });
 
 angular.module('chatBuddies')
