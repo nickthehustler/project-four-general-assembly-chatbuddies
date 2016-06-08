@@ -1,15 +1,86 @@
 angular.module('chatBuddies', ['ui.router']);
 
+
 angular.module('chatBuddies')
-.controller('signupCtrl', function(){
-  console.log("signupCtrl is alive!");
+.controller('authController', function($http, $state){
+  console.log("authController is alive!");
+
+  var vm = this;
+
+   vm.user = {
+    username: '',
+    email: '',
+    password: '',
+    passwordConfirmation: ''
+  };
+
+  vm.newUser = {
+    username: '',
+    email: '',
+    uid: '',
+    photoURL: '',
+    chats: ''
+  };
+
+  vm.confirmPassword = function() {
+    return vm.user.password === vm.user.passwordConfirmation;
+  }
+
+  vm.signUp = function() {
+
+    // first you want to confirm the password and password confirmation match
+    if(vm.confirmPassword() /* check to see if the username is unique*/) {
+      // if password and password confirmation match then
+      // proceed to check if the username is unique
+
+      // check for unique username
+      // ::::::::::::::::DEVELOPER TODO::::::::::::::::
+
+      // If the username is unique then proceed to create a new user
+      firebase.auth().createUserWithEmailAndPassword(vm.user.email, vm.user.password)
+      .then(function(confirmedUser){
+        // build user object to pass to firebase DB
+        console.log("Here is the confirmed user:");
+        console.log(confirmedUser);
+        vm.newUser.username = vm.user.username;
+        vm.newUser.email    = confirmedUser.email;
+        vm.newUser.uid      = confirmedUser.uid;
+        vm.newUser.photoURL = '';
+        vm.newUser.chats    = '';
+
+        console.log("Here is the new user: ", vm.newUser);
+
+        // now we want to store the newly created user in the database
+        $http.post('/api/users', vm.newUser)
+        .then(function() {
+          console.log("Success!");
+          // initialize listeners on user
+          // ::::::::::::::::DEVELOPER TODO::::::::::::::::
+
+          // redirect to user profile page (?)
+          $state.go('profile', {uid: vm.newUser.uid});
+          // $state.go('profile', {uid: vm.firebase.database.currentUser.uid});
+          })
+        })
+      .catch(function(error){
+        // create an error message if something goes wrong
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.log(errorCode + ": " + errorMessage);
+      });
+    } else {
+      // if password and password confirmation don't match then
+      // display an error message
+      console.log("password and password confirmation don't match");
+    }
+  }
+
 });
 
 angular.module('chatBuddies')
-.controller('loginCtrl', function() {
-  console.log("loginCtrl is alive!");
+.controller('usersController', function(){
+  console.log("usersController is alive!");
 });
-
 
 angular.module('chatBuddies')
 .config(function($stateProvider, $urlRouterProvider, $locationProvider){
@@ -25,11 +96,19 @@ angular.module('chatBuddies')
     .state('signup', {
       url: "/signup",
       templateUrl: "views/signup.html",
-      controller: "signupCtrl"
+      controller: "authController",
+      controllerAs: "ctrl"
     })
     .state('login', {
       url: "/login",
       templateUrl: "views/login.html",
-      controller: "loginCtrl"
+      controller: "authController",
+      controllerAs: "ctrl"
+    })
+    .state('profile', {
+      url: "/users/:uid",
+      templateUrl: "views/profile.html",
+      controller: "usersController",
+      controllerAs: "ctrl"
     });
 });

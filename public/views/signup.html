@@ -1,1 +1,35 @@
-<h1>This is the signup view</h1>
+<div>
+  <h1>Sign Up for Chat Buddies</h1>
+
+  <form ng-submit="ctrl.signUp()">
+    <div>
+      <label>Username</label><br>
+      <input type="text" name="username" ng-model="ctrl.user.username"><br>
+    </div>
+
+    <div>
+      <label>Email</label><br>
+      <input type="text" name="email" ng-model="ctrl.user.email"><br>
+    </div>
+
+    <div>
+      <label>Password</label><br>
+      <input type="password" name="password" ng-model="ctrl.user.password"><br>
+    </div>
+
+    <div>
+      <label>Password Confirmation</label><br>
+      <input type="password" name="passwordConfirmation" ng-model="ctrl.user.passwordConfirmation"><br>
+    </div>
+
+    <div>
+      <input type="submit" value="Sign Me Up!"><br>
+    </div>
+  </form>
+
+  <a ui-sref="login">Wait, I do have an account!</a>
+</div>
+
+
+
+
