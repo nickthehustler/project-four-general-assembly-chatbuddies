@@ -1,30 +1,41 @@
-<a href="" ng-click="ctrl.signOut()">Sign Out</a>
-<br><br>
+<div class="cushion">
+  <ul class="nav nav-pills">
+    <li role="presentation"><a href="" ng-click="ctrl.signOut()">Sign Out</a></li>
+  </ul>
+  <br><br>
 
-<img ng-model="ctrl.currentUser" alt="user-profile" src="{{ ctrl.currentUser.photoURL }}" height="150" width="150">
-<br>
+  <div class="head-center">
 
-<p>{{ ctrl.currentUser.username }}</p>
-<br><br>
+    <img class="img-rounded" ng-model="ctrl.currentUser" alt="user-profile" src="{{ ctrl.currentUser.photoURL }}" height="150" width="150">
+    <form>
+    </form>
+    <h3>{{ ctrl.currentUser.username }}</h3>
+    <br><br>
 
-<ul>
-  <li ng-repeat="message in ctrl.messages">
-      {{ message }}
-  </li>
-</ul>
-<br><br>
+    <div class="comment-box">
+      <ul>
+        <li ng-repeat="message in ctrl.messages">
+          <div class="well well-sm">
+            <dl>
+              <dt>{{ message.username }} {{ message.createdAt | date:'medium' }}</dt>
+              <dd>{{ message.content }}</dd>
+            </dl>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <br><br>
 
-<form ng-submit="ctrl.sendMessage()">
-  <div>
-    <input ng-model="ctrl.message.content" type="text" placeholder="Type a message">
+    <form ng-submit="ctrl.sendMessage()">
+      <div class="form-group">
+        <input class="form-control" ng-model="ctrl.newMessage.content" type="text" placeholder="Type a message">
+      </div>
+      <input class="btn btn-primary" type="submit" value="Send Message">
+    </form>
+    <br><br>
+
   </div>
-
-  <div>
-    <input type="submit" value="Send Message">
-  </div>
-</form>
-<br><br>
-
+</div>
 
 
 

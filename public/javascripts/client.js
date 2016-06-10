@@ -1,8 +1,8 @@
-angular.module('chatBuddies', ['ui.router', 'firebase']);
+var app = angular.module('chatBuddies', ['ui.router', 'firebase', 'ui.bootstrap']);
 
 
-angular.module('chatBuddies')
-.controller('authController', function($http, $state){
+
+app.controller('authController', function($http, $state){
   console.log("authController is alive!");
 
   var vm = this;
@@ -94,8 +94,7 @@ angular.module('chatBuddies')
 
 });
 
-angular.module('chatBuddies')
-.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject", function($http, $state, $scope, $firebaseObject){
+app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject", "$firebaseArray", function($http, $state, $scope, $firebaseObject, $firebaseArray){
   console.log("usersController is alive!");
 
   var vm = this;
@@ -112,12 +111,17 @@ angular.module('chatBuddies')
     content: ''
   };
 
+  // Setting up listener on chat messages
   var db = firebase.database();
   var ref = db.ref("firebase/chatbuddies");
   var chatsRef = ref.child('chats');
 
-  $scope.messages = $firebaseObject(chatsRef);
+  vm.messages = $firebaseArray(chatsRef);
 
+  // Setting up path for uploading profile pictures
+  var storage = firebase.storage();
+  var ref = storage.ref();
+  var picRef = ref.child('profilepictures');
 
   vm.getCurrentUserInfo = function() {
     console.log("Getting user info");
@@ -134,64 +138,29 @@ angular.module('chatBuddies')
 
   }
 
-  // vm.setChatListener = function() {
-
-  //   var db = firebase.database();
-  //   var ref = db.ref("firebase/chatbuddies");
-
-  //   var chatsRef = ref.child('chats');
-
-  //   $scope.messages = $firebaseObject(chatsRef);
-  //   // var temp1 = "hello";
-  //   // var tempArray = [];
-  //   // vm.receivedMessages.push(temp1);
-  //   // var i = 1;
-
-  //   // chatsRef.on('child_added', function(snapshot) {
-  //     // var temp2 = "world";
-
-  //     // vm.receivedMessages.push(temp2);
-  //     // tempArray.push(temp2);
-
-  //     // console.log("temp2", temp2);
-
-  //     // console.log('child added key', snapshot.key);
-  //     // console.log(`child added ${i}: `, snapshot.val());
-  //     // console.log('----------------------------------------');
-  //     // console.log('username field:', snapshot.val().username);
-  //     // console.log('content field:', snapshot.val().content);
-  //     // console.log('time field:', snapshot.val().createdAt);
-  //     // console.log('----------------------------------------');
-
-  //     // vm.receivedMessages.push({
-  //     //   username: snapshot.val().username,
-  //     //   time: snapshot.val().createdAt,
-  //     //   content: snapshot.val().content
-  //     // });
-
-  //     // console.log(`receivedMessages pass${i}`, vm.receivedMessages);
-  //     // console.log(`receivedMessages.length pass${i}`, vm.receivedMessages.length);
-  //   //   // i++;
-  //   // });
-  //   // console.log("temp array", tempArray);
-
-  // }
-
   vm.sendMessage = function() {
     // build message to be sent to firebase DB
     vm.newMessage.username = vm.currentUser.username;
+
 
     // send message to server
     $http.post('/api/users/messages', vm.newMessage)
     .then(function(response) {
       console.log("Successfully sent a message to the server!");
       console.log(response.data);
+      vm.resetForm();
     });
+
   }
 
+  vm.resetForm = function() {
+    vm.newMessage.content = '';
+  }
 
-  // move to navigation bar eventually
-  // ::::::::::::::::DEVELOPER TODO::::::::::::::::
+  vm.uploadPicture = function() {
+
+  }
+
   vm.signOut = function() {
     firebase.auth().signOut()
     .then(function() {
@@ -203,11 +172,9 @@ angular.module('chatBuddies')
   }
 
   vm.getCurrentUserInfo();
-  // vm.setChatListener();
 }]);
 
-angular.module('chatBuddies')
-.config(function($stateProvider, $urlRouterProvider, $locationProvider){
+app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
   $urlRouterProvider.otherwise("/home");
   $locationProvider.html5Mode(true);
 

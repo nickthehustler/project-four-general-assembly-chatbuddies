@@ -1,31 +1,33 @@
-<div>
-  <h1>Sign Up for Chat Buddies</h1>
-
+<div class="cushion">
+  <div class="head-center">
+    <h1>Sign Up for Chat Buddies</h1>
+  </div>
   <form ng-submit="ctrl.signUp()">
-    <div>
+    <div class="form-group">
       <label>Username</label><br>
-      <input type="text" name="username" ng-model="ctrl.user.username"><br>
+      <input class="form-control" type="text" name="username" ng-model="ctrl.user.username"><br>
     </div>
 
-    <div>
+    <div class="form-group">
       <label>Email</label><br>
-      <input type="text" name="email" ng-model="ctrl.user.email"><br>
+      <input class="form-control" type="text" name="email" ng-model="ctrl.user.email"><br>
     </div>
 
-    <div>
+    <div class="form-group">
       <label>Password</label><br>
-      <input type="password" name="password" ng-model="ctrl.user.password"><br>
+      <input class="form-control" type="password" name="password" ng-model="ctrl.user.password"><br>
     </div>
 
-    <div>
+    <div class="form-group">
       <label>Password Confirmation</label><br>
-      <input type="password" name="passwordConfirmation" ng-model="ctrl.user.passwordConfirmation"><br>
+      <input class="form-control" type="password" name="passwordConfirmation" ng-model="ctrl.user.passwordConfirmation"><br>
     </div>
 
     <div>
-      <input type="submit" value="Sign Me Up!"><br>
+      <input class="btn btn-primary" type="submit" value="Sign Me Up!"><br>
     </div>
   </form>
+  <br>
 
   <a ui-sref="login">Wait, I do have an account!</a>
 </div>

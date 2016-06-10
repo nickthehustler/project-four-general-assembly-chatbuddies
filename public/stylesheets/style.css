@@ -1,0 +1,35 @@
+.jumbotron {
+  margin: 20px;
+  text-align: center;
+}
+
+.home-page {
+  margin: 5px 40px;
+}
+
+.cushion {
+  margin: 20px;
+}
+
+.head-center{
+  text-align: center;
+  margin: auto;
+}
+
+.well {
+  /*margin: 5px;*/
+}
+
+.comment-box {
+  overflow:auto;
+  margin: 0 auto;
+  height: 500px;
+  width: 500px;
+/*  border: solid;*/
+}
+
+ul {
+    list-style-type: none;
+}
+
+
