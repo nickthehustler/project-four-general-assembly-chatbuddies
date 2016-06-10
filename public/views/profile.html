@@ -1,17 +1,33 @@
-<img ng-model="ctrl.currentUser" alt="user-profile" src="{{ ctrl.currentUser.photoURL }}" height="150" width="150">
-<p>{{ ctrl.currentUser.username }}</p>
+<a href="" ng-click="ctrl.signOut()">Sign Out</a>
+<br><br>
 
-<form>
+<img ng-model="ctrl.currentUser" alt="user-profile" src="{{ ctrl.currentUser.photoURL }}" height="150" width="150">
+<br>
+
+<p>{{ ctrl.currentUser.username }}</p>
+<br><br>
+
+<ul>
+  <li ng-repeat="message in ctrl.messages">
+      {{ message }}
+  </li>
+</ul>
+<br><br>
+
+<form ng-submit="ctrl.sendMessage()">
   <div>
-    <input type="text" placeholder="Enter a username">
+    <input ng-model="ctrl.message.content" type="text" placeholder="Type a message">
   </div>
 
   <div>
-    <input type="submit" value="Search">
+    <input type="submit" value="Send Message">
   </div>
 </form>
+<br><br>
 
 
 
 
-<a href="" ng-click="ctrl.signOut()">Sign Out</a>
+
+
+

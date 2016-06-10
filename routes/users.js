@@ -29,13 +29,12 @@ router.get('/:uid', function(req, res, next) {
 
   var vm = this;
 
-   vm.tempUser = {
+  vm.tempUser = {
       username: '',
       email: '',
       uid: '',
       photoURL: '',
-      chats: ''
-    };
+  };
 
   usersRef.child(req.params.uid).once('value')
   .then(function(snapshot) {
@@ -47,7 +46,6 @@ router.get('/:uid', function(req, res, next) {
     vm.tempUser.username = snapshot.val().username;
     vm.tempUser.photoURL = snapshot.val().photoURL;
     vm.tempUser.email    = snapshot.val().email;
-    vm.tempUser.chats    = snapshot.val().chats;
     vm.tempUser.uid      = req.params.uid;
 
     console.log(vm.tempUser);
@@ -55,6 +53,22 @@ router.get('/:uid', function(req, res, next) {
   })
   .catch(function(error){
     console.log("Something went wrong with the firebase DB.");
+  });
+});
+
+
+router.post('/messages', function(req, res, next) {
+  console.log("Made it to the POST message route.");
+  // console.log(req.body);
+  chatsRef.push({
+    username: req.body.username,
+    createdAt: firebase.database.ServerValue.TIMESTAMP,
+    content: req.body.content
+  })
+  .then(function(response) {
+    console.log("Successfully pushed data to Firebase.");
+    res.json({content: "You are a great guy!"});
+    // res.json(response.data);
   });
 });
 
@@ -69,17 +83,13 @@ router.post('/', function(req, res, next) {
       username:   req.body.username,
       email:      req.body.email,
       photoURL:   req.body.photoURL,
-      chats:      req.body.chats,
+      uid:        req.body.uid,
       createdAt:  firebase.database.ServerValue.TIMESTAMP,
       updatedAt:  firebase.database.ServerValue.TIMESTAMP
   })
   .then(function(){
     res.json({content: "Hello Nick"});
   })
-});
-
-router.get('/search', function(req, res, next) {
-
 });
 
 module.exports = router;

@@ -1,4 +1,4 @@
-angular.module('chatBuddies', ['ui.router']);
+angular.module('chatBuddies', ['ui.router', 'firebase']);
 
 
 angular.module('chatBuddies')
@@ -7,7 +7,9 @@ angular.module('chatBuddies')
 
   var vm = this;
 
-   vm.user = {
+  vm.photoLink = "https://firebasestorage.googleapis.com/v0/b/project-3444843529926405572.appspot.com/o/solid_gray_square.png?alt=media&token=988c7653-0619-41ed-b811-be57ca1a297a"
+
+  vm.user = {
     username: '',
     email: '',
     password: '',
@@ -18,8 +20,7 @@ angular.module('chatBuddies')
     username: '',
     email: '',
     uid: '',
-    photoURL: '',
-    chats: ''
+    photoURL: ''
   };
 
   vm.confirmPassword = function() {
@@ -45,8 +46,7 @@ angular.module('chatBuddies')
         vm.newUser.username = vm.user.username;
         vm.newUser.email    = confirmedUser.email;
         vm.newUser.uid      = confirmedUser.uid;
-        vm.newUser.photoURL = '';
-        vm.newUser.chats    = '';
+        vm.newUser.photoURL = vm.photoLink;
 
         console.log("Here is the new user: ", vm.newUser);
 
@@ -95,7 +95,7 @@ angular.module('chatBuddies')
 });
 
 angular.module('chatBuddies')
-.controller('usersController', function($http, $state){
+.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject", function($http, $state, $scope, $firebaseObject){
   console.log("usersController is alive!");
 
   var vm = this;
@@ -104,9 +104,20 @@ angular.module('chatBuddies')
     username: '',
     email: '',
     uid: firebase.auth().currentUser.uid,
-    photoURL: '',
-    chats: ''
+    photoURL: ''
   }
+
+  vm.newMessage = {
+    username: '',
+    content: ''
+  };
+
+  var db = firebase.database();
+  var ref = db.ref("firebase/chatbuddies");
+  var chatsRef = ref.child('chats');
+
+  $scope.messages = $firebaseObject(chatsRef);
+
 
   vm.getCurrentUserInfo = function() {
     console.log("Getting user info");
@@ -119,9 +130,65 @@ angular.module('chatBuddies')
       vm.currentUser.username = response.data.username;
       vm.currentUser.email    = response.data.email;
       vm.currentUser.photoURL = response.data.photoURL;
-      vm.currentUser.chats    = response.data.chats;
+    });
+
+  }
+
+  // vm.setChatListener = function() {
+
+  //   var db = firebase.database();
+  //   var ref = db.ref("firebase/chatbuddies");
+
+  //   var chatsRef = ref.child('chats');
+
+  //   $scope.messages = $firebaseObject(chatsRef);
+  //   // var temp1 = "hello";
+  //   // var tempArray = [];
+  //   // vm.receivedMessages.push(temp1);
+  //   // var i = 1;
+
+  //   // chatsRef.on('child_added', function(snapshot) {
+  //     // var temp2 = "world";
+
+  //     // vm.receivedMessages.push(temp2);
+  //     // tempArray.push(temp2);
+
+  //     // console.log("temp2", temp2);
+
+  //     // console.log('child added key', snapshot.key);
+  //     // console.log(`child added ${i}: `, snapshot.val());
+  //     // console.log('----------------------------------------');
+  //     // console.log('username field:', snapshot.val().username);
+  //     // console.log('content field:', snapshot.val().content);
+  //     // console.log('time field:', snapshot.val().createdAt);
+  //     // console.log('----------------------------------------');
+
+  //     // vm.receivedMessages.push({
+  //     //   username: snapshot.val().username,
+  //     //   time: snapshot.val().createdAt,
+  //     //   content: snapshot.val().content
+  //     // });
+
+  //     // console.log(`receivedMessages pass${i}`, vm.receivedMessages);
+  //     // console.log(`receivedMessages.length pass${i}`, vm.receivedMessages.length);
+  //   //   // i++;
+  //   // });
+  //   // console.log("temp array", tempArray);
+
+  // }
+
+  vm.sendMessage = function() {
+    // build message to be sent to firebase DB
+    vm.newMessage.username = vm.currentUser.username;
+
+    // send message to server
+    $http.post('/api/users/messages', vm.newMessage)
+    .then(function(response) {
+      console.log("Successfully sent a message to the server!");
+      console.log(response.data);
     });
   }
+
 
   // move to navigation bar eventually
   // ::::::::::::::::DEVELOPER TODO::::::::::::::::
@@ -136,7 +203,8 @@ angular.module('chatBuddies')
   }
 
   vm.getCurrentUserInfo();
-});
+  // vm.setChatListener();
+}]);
 
 angular.module('chatBuddies')
 .config(function($stateProvider, $urlRouterProvider, $locationProvider){

@@ -1,5 +1,6 @@
 <div>
   <h1>Login to Chat Buddies</h1>
+  <br>
 
   <form ng-submit="ctrl.login()">
     <div>
@@ -9,13 +10,15 @@
 
     <div>
       <label>Password</label><br>
-      <input type="password" name="password" ng-model="ctrl.user.password"><br>
+      <input type="password" name="password" ng-model="ctrl.user.password">
     </div>
+    <br>
 
     <div>
       <input type="submit" value="Log Me Up!"><br>
     </div>
   </form>
+  <br>
 
   <a ui-sref="signup">I just realized I don't have an account! I need to sign up!</a>
 </div>
