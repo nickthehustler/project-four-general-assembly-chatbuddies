@@ -158,7 +158,7 @@ app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject
   }
 
   vm.uploadPicture = function() {
-
+    console.log("You are hitting the uploadPicture method.");
   }
 
   vm.signOut = function() {
@@ -199,6 +199,12 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
     .state('profile', {
       url: "/users/:uid",
       templateUrl: "views/profile.html",
+      controller: "usersController",
+      controllerAs: "ctrl"
+    })
+    .state('picture', {
+      url: "/users/:uid/picture",
+      templateUrl: "views/picture.html",
       controller: "usersController",
       controllerAs: "ctrl"
     });

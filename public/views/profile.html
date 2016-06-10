@@ -1,5 +1,7 @@
 <div class="cushion">
   <ul class="nav nav-pills">
+    <li role="presentation"><a ui-sref="profile({uid: ctrl.currentUser.uid})">Chat</a></li>
+    <li role="presentation"><a ui-sref="picture({uid: ctrl.currentUser.uid})">Upload Picture</a></li>
     <li role="presentation"><a href="" ng-click="ctrl.signOut()">Sign Out</a></li>
   </ul>
   <br><br>
@@ -7,8 +9,7 @@
   <div class="head-center">
 
     <img class="img-rounded" ng-model="ctrl.currentUser" alt="user-profile" src="{{ ctrl.currentUser.photoURL }}" height="150" width="150">
-    <form>
-    </form>
+
     <h3>{{ ctrl.currentUser.username }}</h3>
     <br><br>
 
