@@ -34,6 +34,7 @@ router.get('/:uid', function(req, res, next) {
       email: '',
       uid: '',
       photoURL: '',
+      chats: ''
   };
 
   usersRef.child(req.params.uid).once('value')
@@ -47,6 +48,7 @@ router.get('/:uid', function(req, res, next) {
     vm.tempUser.photoURL = snapshot.val().photoURL;
     vm.tempUser.email    = snapshot.val().email;
     vm.tempUser.uid      = req.params.uid;
+    vm.tempUser.chats    = snapshot.val().chats;
 
     console.log(vm.tempUser);
     res.json(vm.tempUser);
@@ -84,6 +86,7 @@ router.post('/', function(req, res, next) {
       email:      req.body.email,
       photoURL:   req.body.photoURL,
       uid:        req.body.uid,
+      chats:      req.body.chats,
       createdAt:  firebase.database.ServerValue.TIMESTAMP,
       updatedAt:  firebase.database.ServerValue.TIMESTAMP
   })
