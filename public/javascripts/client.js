@@ -7,7 +7,7 @@ app.controller('authController', function($http, $state){
 
   var vm = this;
 
-  vm.photoLink = "https://firebasestorage.googleapis.com/v0/b/project-3444843529926405572.appspot.com/o/solid_gray_square.png?alt=media&token=988c7653-0619-41ed-b811-be57ca1a297a"
+  vm.photoLink = "https://firebasestorage.googleapis.com/v0/b/project-3444843529926405572.appspot.com/o/solid_gray_square.png?alt=media&token=988c7653-0619-41ed-b811-be57ca1a297a";
 
   vm.user = {
     username: '',
@@ -101,6 +101,8 @@ app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject
 
   var vm = this;
 
+  vm.amazonlink = "http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/";
+
   vm.currentUser = {
     username: '',
     email: '',
@@ -111,6 +113,10 @@ app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject
   vm.newMessage = {
     username: '',
     content: ''
+  };
+
+  vm.searchTerm = {
+    term: ''
   };
 
   // Setting up listener on chat messages
@@ -124,6 +130,17 @@ app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject
   var storage = firebase.storage();
   var ref = storage.ref();
   var picRef = ref.child('profilepictures');
+
+  vm.searchForUsername = function() {
+    console.log("...searching");
+    console.log(vm.searchTerm);
+
+    $http.post('/api/users/search', vm.searchTerm)
+    // $http.get('/api/users/search')
+    .then(function(response) {
+      console.log(response.data);
+    });
+  }
 
   vm.getCurrentUserInfo = function() {
     console.log("Getting user info");

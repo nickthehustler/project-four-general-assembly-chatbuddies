@@ -13,10 +13,10 @@
     <h3>{{ ctrl.currentUser.username }}</h3>
     <br><br>
 
-    <form>
+    <form ng-keyup="ctrl.searchForUsername()">
       <div class="form-group">
         <label><h3>Search to Find Someone to Talk With</h3></label><br>
-        <input class="form-control" type="text"><br>
+        <input ng-model="ctrl.searchTerm.term" class="form-control" type="text"><br>
       </div>
       <div class="form-group">
         <input class="btn btn-primary" type="submit" value="Search">

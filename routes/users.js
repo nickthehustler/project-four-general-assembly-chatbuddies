@@ -1,5 +1,6 @@
-var express   = require('express');
-var firebase  = require('firebase');
+var express         = require('express');
+var firebase        = require('firebase');
+var elasticsearch   = require('elasticsearch');
 
 // initialize a new router
 var router    = express.Router();
@@ -20,9 +21,15 @@ var ref = db.ref("firebase/chatbuddies");
 var usersRef = ref.child('users');
 var chatsRef = ref.child('chats');
 
+// Amazon ElasticSearch
+
+var client = new elasticsearch.Client({
+  host: 'http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/'
+});
+
 // routes
 
-router.get('/:uid', function(req, res, next) {
+router.get('/:uid', function(req, res) {
   // retrieve user from database
   console.log("You are in the GET route");
   console.log(req.params.uid);
@@ -58,7 +65,6 @@ router.get('/:uid', function(req, res, next) {
   });
 });
 
-
 router.post('/messages', function(req, res, next) {
   console.log("Made it to the POST message route.");
   // console.log(req.body);
@@ -71,6 +77,27 @@ router.post('/messages', function(req, res, next) {
     console.log("Successfully pushed data to Firebase.");
     res.json({content: "You are a great guy!"});
     // res.json(response.data);
+  });
+});
+
+router.post('/search', function(req, res, next) {
+  console.log("Made it to the search route.");
+  // console.log(req.body);
+  client.search({
+  index: 'firebase',
+  type: 'users',
+  size: 100,
+  body: {
+    query: {
+      match_phrase_prefix: {
+        username: req.body.term
+      }
+    }
+  }
+  }).then(function (response) {
+    var hits = resp.body.hits;
+    console.log(hits);
+    res.json({content: "You made it to search dude!"});
   });
 });
 
@@ -94,6 +121,7 @@ router.post('/', function(req, res, next) {
     res.json({content: "Hello Nick"});
   })
 });
+
 
 module.exports = router;
 
