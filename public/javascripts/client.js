@@ -20,7 +20,8 @@ app.controller('authController', function($http, $state){
     username: '',
     email: '',
     uid: '',
-    photoURL: ''
+    photoURL: '',
+    chats: {}
   };
 
   vm.confirmPassword = function() {
@@ -47,6 +48,7 @@ app.controller('authController', function($http, $state){
         vm.newUser.email    = confirmedUser.email;
         vm.newUser.uid      = confirmedUser.uid;
         vm.newUser.photoURL = vm.photoLink;
+        vm.newUser.chats    = {};
 
         console.log("Here is the new user: ", vm.newUser);
 

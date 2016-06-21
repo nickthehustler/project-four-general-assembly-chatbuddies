@@ -13,33 +13,14 @@
     <h3>{{ ctrl.currentUser.username }}</h3>
     <br><br>
 
-    <div class="comment-box">
-      <ul>
-        <li ng-repeat="message in ctrl.messages">
-          <div class="well well-sm">
-            <dl>
-              <dt>{{ message.username }} {{ message.createdAt | date:'medium' }}</dt>
-              <dd>{{ message.content }}</dd>
-            </dl>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <br><br>
 
-    <form ng-submit="ctrl.sendMessage()">
-      <div class="form-group">
-        <input class="form-control" ng-model="ctrl.newMessage.content" type="text" placeholder="Type a message">
-      </div>
-      <input class="btn btn-primary" type="submit" value="Send Message">
+    <form>
+        <label><h2>Search to Find Someone to Talk With</h2></label>
+        <input type="text">
+
+        <input type="submit">
     </form>
-    <br><br>
+
 
   </div>
 </div>
-
-
-
-
-
-
