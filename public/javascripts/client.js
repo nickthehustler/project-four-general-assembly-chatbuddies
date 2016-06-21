@@ -119,6 +119,10 @@ app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject
     term: ''
   };
 
+  // var client = new elasticsearch.Client({
+  //   host: 'http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/'
+  // });
+
   // Setting up listener on chat messages
   var db = firebase.database();
   var ref = db.ref("firebase/chatbuddies");
@@ -140,6 +144,7 @@ app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject
     .then(function(response) {
       console.log(response.data);
     });
+
   }
 
   vm.getCurrentUserInfo = function() {

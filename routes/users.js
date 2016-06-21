@@ -24,7 +24,8 @@ var chatsRef = ref.child('chats');
 // Amazon ElasticSearch
 
 var client = new elasticsearch.Client({
-  host: 'http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/'
+  host: 'http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/',
+  info: 'info'
 });
 
 // routes
@@ -82,23 +83,32 @@ router.post('/messages', function(req, res, next) {
 
 router.post('/search', function(req, res, next) {
   console.log("Made it to the search route.");
-  // console.log(req.body);
+  console.log(req.body.term);
+  // console.log(client);
+  // var client = new elasticsearch.Client({
+  //   host: 'http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/',
+  //   log: 'info'
+  // });
+
   client.search({
-  index: 'firebase',
-  type: 'users',
-  size: 100,
-  body: {
-    query: {
-      match_phrase_prefix: {
-        username: req.body.term
+    index: 'firebase',
+    type: 'users',
+    body: {
+      query: {
+        match_phrase_prefix: {
+          username: req.body.term
+        }
       }
     }
-  }
-  }).then(function (response) {
-    var hits = resp.body.hits;
+  })
+  .then(function(response) {
+    var hits = response.body.hits;
     console.log(hits);
-    res.json({content: "You made it to search dude!"});
+    res.json({content: "You got a search result dude!"});
+  }, function(err){
+    console.log("error message:", err);
   });
+  console.log("hello");
 });
 
 router.post('/', function(req, res, next) {
