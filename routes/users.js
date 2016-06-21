@@ -1,5 +1,6 @@
-var express   = require('express');
-var firebase  = require('firebase');
+var express         = require('express');
+var firebase        = require('firebase');
+var elasticsearch   = require('elasticsearch');
 
 // initialize a new router
 var router    = express.Router();
@@ -20,9 +21,16 @@ var ref = db.ref("firebase/chatbuddies");
 var usersRef = ref.child('users');
 var chatsRef = ref.child('chats');
 
+// Amazon ElasticSearch
+
+var client = new elasticsearch.Client({
+  host: 'http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/',
+  info: 'info'
+});
+
 // routes
 
-router.get('/:uid', function(req, res, next) {
+router.get('/:uid', function(req, res) {
   // retrieve user from database
   console.log("You are in the GET route");
   console.log(req.params.uid);
@@ -34,6 +42,7 @@ router.get('/:uid', function(req, res, next) {
       email: '',
       uid: '',
       photoURL: '',
+      chats: ''
   };
 
   usersRef.child(req.params.uid).once('value')
@@ -47,6 +56,7 @@ router.get('/:uid', function(req, res, next) {
     vm.tempUser.photoURL = snapshot.val().photoURL;
     vm.tempUser.email    = snapshot.val().email;
     vm.tempUser.uid      = req.params.uid;
+    vm.tempUser.chats    = snapshot.val().chats;
 
     console.log(vm.tempUser);
     res.json(vm.tempUser);
@@ -55,7 +65,6 @@ router.get('/:uid', function(req, res, next) {
     console.log("Something went wrong with the firebase DB.");
   });
 });
-
 
 router.post('/messages', function(req, res, next) {
   console.log("Made it to the POST message route.");
@@ -72,6 +81,36 @@ router.post('/messages', function(req, res, next) {
   });
 });
 
+router.post('/search', function(req, res, next) {
+  console.log("Made it to the search route.");
+  console.log(req.body.term);
+  // console.log(client);
+  // var client = new elasticsearch.Client({
+  //   host: 'http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/',
+  //   log: 'info'
+  // });
+
+  client.search({
+    index: 'firebase',
+    type: 'users',
+    body: {
+      query: {
+        match_phrase_prefix: {
+          username: req.body.term
+        }
+      }
+    }
+  })
+  .then(function(response) {
+    var hits = response.body.hits;
+    console.log(hits);
+    res.json({content: "You got a search result dude!"});
+  }, function(err){
+    console.log("error message:", err);
+  });
+  console.log("hello");
+});
+
 router.post('/', function(req, res, next) {
   console.log("---------------------");
   console.log("You hit the users api");
@@ -84,6 +123,7 @@ router.post('/', function(req, res, next) {
       email:      req.body.email,
       photoURL:   req.body.photoURL,
       uid:        req.body.uid,
+      chats:      req.body.chats,
       createdAt:  firebase.database.ServerValue.TIMESTAMP,
       updatedAt:  firebase.database.ServerValue.TIMESTAMP
   })
@@ -91,6 +131,7 @@ router.post('/', function(req, res, next) {
     res.json({content: "Hello Nick"});
   })
 });
+
 
 module.exports = router;
 

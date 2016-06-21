@@ -7,7 +7,7 @@ app.controller('authController', function($http, $state){
 
   var vm = this;
 
-  vm.photoLink = "https://firebasestorage.googleapis.com/v0/b/project-3444843529926405572.appspot.com/o/solid_gray_square.png?alt=media&token=988c7653-0619-41ed-b811-be57ca1a297a"
+  vm.photoLink = "https://firebasestorage.googleapis.com/v0/b/project-3444843529926405572.appspot.com/o/solid_gray_square.png?alt=media&token=988c7653-0619-41ed-b811-be57ca1a297a";
 
   vm.user = {
     username: '',
@@ -20,7 +20,8 @@ app.controller('authController', function($http, $state){
     username: '',
     email: '',
     uid: '',
-    photoURL: ''
+    photoURL: '',
+    chats: ''
   };
 
   vm.confirmPassword = function() {
@@ -47,6 +48,7 @@ app.controller('authController', function($http, $state){
         vm.newUser.email    = confirmedUser.email;
         vm.newUser.uid      = confirmedUser.uid;
         vm.newUser.photoURL = vm.photoLink;
+        vm.newUser.chats    = '';
 
         console.log("Here is the new user: ", vm.newUser);
 
@@ -99,6 +101,8 @@ app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject
 
   var vm = this;
 
+  vm.amazonlink = "http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/";
+
   vm.currentUser = {
     username: '',
     email: '',
@@ -111,6 +115,14 @@ app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject
     content: ''
   };
 
+  vm.searchTerm = {
+    term: ''
+  };
+
+  // var client = new elasticsearch.Client({
+  //   host: 'http://search-chatbuddies-o3435trg4cn5bdaiqgizuel4bu.us-west-2.es.amazonaws.com/'
+  // });
+
   // Setting up listener on chat messages
   var db = firebase.database();
   var ref = db.ref("firebase/chatbuddies");
@@ -122,6 +134,18 @@ app.controller('usersController', ["$http", "$state", "$scope", "$firebaseObject
   var storage = firebase.storage();
   var ref = storage.ref();
   var picRef = ref.child('profilepictures');
+
+  vm.searchForUsername = function() {
+    console.log("...searching");
+    console.log(vm.searchTerm);
+
+    $http.post('/api/users/search', vm.searchTerm)
+    // $http.get('/api/users/search')
+    .then(function(response) {
+      console.log(response.data);
+    });
+
+  }
 
   vm.getCurrentUserInfo = function() {
     console.log("Getting user info");
