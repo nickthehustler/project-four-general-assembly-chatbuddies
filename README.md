@@ -15,7 +15,7 @@ Firebase is
 
 
 ##Future Developments
-- User can profile upload
+- User can profile picture upload
 - Incorporate a search feature that allows users to find other users to chat
 - Break up the chat to allow for smaller group chats
 
